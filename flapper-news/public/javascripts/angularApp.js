@@ -1,5 +1,5 @@
 var app = angular.module('flapperNews', ['ui.router']);
-app.factory('posts', [function(){
+app.factory('posts', ['$http',function($http){
     var o = {
         posts: [
             {title: 'post 1', upvotes: 5, comments:[], link: ''}, 
@@ -8,6 +8,11 @@ app.factory('posts', [function(){
             {title: 'post 4', upvotes: 9, comments:[], link: ''}, 
             {title: 'post 5', upvotes: 4, comments:[], link: ''}
         ]
+    };
+    o.getAll = function(){
+        return $http.get('/posts').success(function(data){
+            angular.copy(data, o.posts);
+        });
     };
     return o;
 }]);
