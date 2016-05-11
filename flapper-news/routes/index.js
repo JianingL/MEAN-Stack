@@ -40,6 +40,8 @@ router.param('post', function(req, res, next, id){
         req.post = post;
         return next();
     });
+    
+    
 });
 
 router.param('comment', function(req, res, next, id){
@@ -88,7 +90,7 @@ router.post('/posts/:post/comments', function(req, res, next){
 
 router.put('/posts/:post/comments/:comment/upvote', function(req, res, next){
     req.comment.upvote(function(err, comment){
-        if (err) {retrun next(err);}
+        if (err) { return next(err); }
         
         res.json(comment);
     });
