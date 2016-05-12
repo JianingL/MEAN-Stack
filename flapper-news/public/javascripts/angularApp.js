@@ -16,14 +16,14 @@ app.factory('posts', ['$http','auth', function($http, auth){
     };
     o.create = function(post){
         return $http.post('/posts', post, {
-            headers: {Authorization: 'Bearer' + auth.getToken()}
+            headers: {Authorization: 'Bearer ' + auth.getToken()}
         }).success(function(data){
             o.posts.push(data);
         });
     };
     o.upvote = function(post){
         return $http.put('/posts/' + post._id + '/upvote', null, {
-            headers: {Authorization: 'Bearer' + auth.getToken()}
+            headers: {Authorization: 'Bearer ' + auth.getToken()}
         }).success(function(data){
             post.upvotes += 1;
         });
@@ -35,12 +35,12 @@ app.factory('posts', ['$http','auth', function($http, auth){
     };
     o.addComment = function(id, comment){
         return $http.post('/posts/' + id + '/comments', comment, {
-            headers: {Authorization: 'Bearer' + auth.getToken()}
+            headers: {Authorization: 'Bearer ' + auth.getToken()}
         });
     };
     o.upvoteComment = function(post, comment){
         return $http.put('/posts/' + post._id + '/comments/' + comment._id + '/upvote/', null, {
-            headers: {Authorization: 'Bearer' + auth.getToken()}
+            headers: {Authorization: 'Bearer ' + auth.getToken()}
         }).success(function(data){
             comment.upvotes += 1;
         });
@@ -166,6 +166,28 @@ app.controller('NavCtrl', [
         $scope.currentUser = auth.currentUser;
         $scope.logOut = auth.logOut;
     }]);
+app.controller('AuthCtrl', [
+    '$scope',
+    '$state',
+    'auth',
+    function($scope, $state, auth){
+        $scope.user = {};
+        $scope.register = function(){
+            auth.register($scope.user).error(function(error){
+                $scope.error = error;
+            }).then(function(){
+                $state.go('home');
+            });
+        };
+    
+        $scope.logIn = function(){
+            auth.logIn($scope.user).error(function(error){
+                $scope.error = error;
+            }).then(function(){
+                $state.go('home');
+            });
+        };
+}]);
 
 app.config([
     '$stateProvider',
@@ -216,25 +238,3 @@ app.config([
     }
 ]);
 
-app.controller('AuthCtrl', [
-    '$scope',
-    '$state',
-    'auth',
-    function($scope, $state, auth){
-        $scope.user = {};
-        $scope.register = function(){
-            auth.register($scope.user).error(function(error){
-                $scope.error = error;
-            }).then(function(){
-                $state.go('home');
-            });
-        };
-        
-        $scope.logIn = function(){
-            auth.logIn($scope.user).error(function(error){
-                $scope.error = error;
-            }).then(function(){
-                $state.go('home');
-            });
-        };
-}]);

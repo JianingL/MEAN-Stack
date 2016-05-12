@@ -123,11 +123,12 @@ router.post('/login', function(req, res, next){
     passport.authenticate('local', function(err, user, info){
         if (err) {return  next(err); }
         if (user){
-            return res.json({token: user.generateJWT()});
+            var token = user.generateJWT();
+            return res.json({token: token});
         } else {
             return res.status(401).json(info);
         }
-    });
+    })(req, res, next);
 });
 
 module.exports = router;
